@@ -1,0 +1,105 @@
+(*File: lexer.mml*)
+{
+        #use "token.ml";;
+}
+
+let digit = ['0'-'9']
+let digits = digit +
+let true = "true"
+let false = "false"
+let bool = true | false
+
+let lower = ['a'-'z']
+let upper = ['A'-'Z']
+
+let idAlph =  upper | lower
+let id = idAlph +*
+let plus = '+'
+let minus = '-'
+let times = '*'
+let div = '/'
+let lt = '<'
+let lte = "<="
+let gt = '>'
+let gte = ">="
+let is_eq = "=="
+let is_not_eq = "!="
+let bool_or = "||"
+let bool_and = "&&"
+let equ = '='
+let if = "if"
+let else = "else"
+let colon = ':'
+let space = ' '
+let begin_comment_one = "(*"
+let end_comment_one = "*)"
+let begin_comment = begin_comment_one +*
+let end_comment = end_comment_one +*
+let lparen = '('
+let rparen = ')'
+
+rule lexer = parse
+     digits '.' digits as f { Float_tok (float_of_string f)
+                            :: lexer lexbuf }
+| digits as n               { Int_tok (int_of_string n)
+                            :: lexer lexbuf }
+
+| bool as b                 { Bool_tok (bool_of_string b)
+                            :: lexer lexbuf }
+                            
+| plus as p                 { Plus_tok p :: lexer lexbuf }
+
+| minus as m                { Minus_tok m :: lexer lexbuf }
+
+| times as t                { Times_tok t :: lexer lexbuf }
+
+| div as d                  { Div_tok d :: lexer lexbuf }
+
+| lt as l                   { Lt_tok l :: lexer lexbuf }
+
+| lte as le                 { Lte_tok le :: lexer lexbuf }
+
+| gt as g                   { Gt_tok g :: lexer lexbuf }
+
+| gte as ge                 { Gte_tok ge :: lexer lexbuf }
+
+| is_eq as ie               { Is_Equ_tok ie :: lexer lexbuf }
+
+| is_not_eq as ine          { Is_Not_Equ_tok ine :: lexer lexbuf }
+
+| bool_or as bo             { Bool_Or_tok bo :: lexer lexbuf }
+
+| bool_and as ba            { Bool_And_tok ba :: lexer lexbuf }
+
+| equ as e                  { Equ_tok e :: lexer lexbuf }
+
+| if as f                   { If_tok f :: lexer lexbuf }
+
+| else as el                { Else_tok el :: lexer lexbuf }
+
+| colon as cl               { Colon_tok cl :: lexer lexbuf }
+
+| lparen as lp              { Lparen_tok lp :: lexer lexbuf }
+
+| rparen as rp              { Rparen_tok rp :: lexer lexbuf }
+ 
+| id as i                   { Id_tok i :: lexer lexbuf }
+
+| begin_comment             { comment lexbuf }
+
+
+| eof                       { [] }
+| _                         { lexer lexbuf }
+and
+   comment = parse
+     end_comment            { lexer lexbuf }
+     | _                    { comment lexbuf }
+        
+{
+let tokenize s = lexer (Lexing.from_string s);;
+
+(*let newlexbuf = let s = (Lexing.from_string "2 true 1.2 x + - * / == = if else (*(*( ) *)*)")
+in lexer s;;*)
+
+(*newlexbuf;;*)
+}
