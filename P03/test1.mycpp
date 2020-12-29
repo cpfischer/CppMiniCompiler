@@ -1,0 +1,10 @@
+
+PROGRAM
+ REAL a;
+BEGIN
+    a := 1.5;
+    c;
+END;
+
+
+
